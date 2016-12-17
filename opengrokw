@@ -1,0 +1,2 @@
+#!/usr/bin/sh
+python /usr/share/opengrokw/opengrokw.py ${@}
