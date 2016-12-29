@@ -16,16 +16,18 @@ class OpenGrok:
 		self.metadata = os.path.join(self.basedir, 'metadata')
 		if os.path.exists(self.metadata):
 			with open(self.metadata, 'r') as metadatafile:
-				self.deploydir = metadatafile.read()
+				self.name = metadatafile.readline().rstrip()
+				self.deploydir = metadatafile.readline().rstrip()
 	
 	# Deploy the opengrok workspace
 	def deploy(self, webappsdir, name = None):
 		opengrokwar = '/usr/share/java/opengrok/source.war'
-		name = name if name else os.path.basename(self.basedir)
-		self.deploydir = os.path.join(webappsdir, name)
+		self.name = name if name else os.path.basename(self.basedir)
+		self.deploydir = os.path.join(webappsdir, self.name)
 
 		with open(self.metadata, 'w') as metadatafile:
-			metadatafile.write(self.deploydir)
+			metadatafile.write(self.name + os.linesep)
+			metadatafile.write(self.deploydir + os.linesep)
 
 		os.makedirs(self.deploydir, 0o755, False)
 		with zipfile.ZipFile(opengrokwar, 'r') as warfile:
@@ -50,6 +52,7 @@ class OpenGrok:
 				'-W', self.configuration,
 				'-s', self.sourcedir,
 				'-d', self.datadir,
+				'-w', self.name,
 				'-P', '-C', '-v']
 				
 		for module in modules:	
@@ -65,8 +68,8 @@ class OpenGrok:
 
 # Callback methods
 def init(opengrok, args):
-	opengrok.run()
 	opengrok.deploy(args.webappsdir, args.name)
+	opengrok.run()
 	
 def index(opengrok, args):
 	opengrok = OpenGrok(args.opengrokdir)

@@ -1,7 +1,7 @@
 # Maintainer: xdevl <xdevl@users.noreply.github.com>
 pkgname=opengrok
 pkgver=0.12.1.6
-pkgrel=1
+pkgrel=2
 pkgdesc="A fast and usable source code search and cross reference engine, written in Java"
 url="http://opengrok.github.io/OpenGrok/"
 arch=('any')
@@ -11,7 +11,7 @@ source=("https://github.com/OpenGrok/OpenGrok/files/467358/${pkgname}-${pkgver}.
         'opengrokw.py'
         'opengrokw')
 sha1sums=('4bec1b2ae58131fb407b9ca8f18ac330b8624180'
-          'd2a058af2d931fabe3849aa3b337a9ec88db35f4'
+          'd3a3ee2443590f488506230f328aea7375ce461d'
           '8a174d227dcc58af81184ea9b2fbfbbb0bc11f60')
 
 prepare() {
