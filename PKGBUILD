@@ -1,17 +1,17 @@
 # Maintainer: xdevl <xdevl@users.noreply.github.com>
 pkgname=opengrok
-pkgver=0.12.1.6
-pkgrel=2
+pkgver=1.7.17
+pkgrel=1
 pkgdesc="A fast and usable source code search and cross reference engine, written in Java"
 url="http://opengrok.github.io/OpenGrok/"
 arch=('any')
 license=('CDDL')
-depends=('tomcat8' 'sh' 'java-environment' 'ctags' 'python3')
-source=("https://github.com/OpenGrok/OpenGrok/files/467358/${pkgname}-${pkgver}.tar.gz.zip"
+depends=('tomcat10' 'sh' 'java-environment' 'ctags' 'python3')
+source=("https://github.com/oracle/opengrok/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.gz"
         'opengrokw.py'
         'opengrokw')
-sha1sums=('4bec1b2ae58131fb407b9ca8f18ac330b8624180'
-          'd3a3ee2443590f488506230f328aea7375ce461d'
+sha1sums=('9ac03eca9e099d8f546fee97d2528cb32b6e4fac'
+          'e46be9629862b9b5f4242f191a948e609bb47720'
           '8a174d227dcc58af81184ea9b2fbfbbb0bc11f60')
 
 prepare() {

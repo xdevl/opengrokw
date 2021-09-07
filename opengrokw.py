@@ -49,15 +49,14 @@ class OpenGrok:
 		os.makedirs(self.sourcedir, 0o755, True)
 		params = ['java',
 				'-jar', opengrokjar,
-				'-W', self.configuration,
-				'-s', self.sourcedir,
-				'-d', self.datadir,
-				'-w', self.name,
-				'-P', '-C', '-v']
+				'--writeConfig', self.configuration,
+				'--source', self.sourcedir,
+				'--dataRoot', self.datadir,
+				'--projects', '--verbose']
 				
 		for module in modules:	
-			params.append('-h')
-			params.append(module)
+			params.append('--include')
+			params.append(os.path.join(self.sourcedir, module, '*'))
 			
 		subprocess.check_call(params)
 	
@@ -101,7 +100,7 @@ subparsers = parser.add_subparsers()
 
 initparser = subparsers.add_parser('init', add_help = False,
 	description = 'Initialise and deploy a new opengrok workspace.')
-initparser.add_argument('--webappsdir', default = '/var/lib/tomcat8/webapps',
+initparser.add_argument('--webappsdir', default = '/var/lib/tomcat10/webapps',
 	help = 'Directory into which deploy the webapp associated to the opengrok workspace.')
 initparser.add_argument('--name',
 	help = 'Name used to access the opengrok workspace from the webserver.')
