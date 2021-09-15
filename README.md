@@ -1,71 +1,66 @@
 # Opengrok workspace manager
-Wrapper to easily create and manage opengrok workspaces along with their deployment and the addition/removal of their modules.
+Wrapper to easily create and manage [OpenGrok](https://github.com/oracle/opengrok) workspaces along with their deployment and the addition/removal of their associated projects.
 
-# Overview
-```
-usage: opengrokw.py [-h] [--opengrokdir OPENGROKDIR] {init,index,add,remove,list} ...
-```
+## Terminology
 
-Opengrok workspace manager
-
-positional arguments:
-  {init,index,add,remove,list}
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --opengrokdir OPENGROKDIR
-                        Opengrok workspace directory. If none, the working
-                        directory will be used.
+### Workspace
+Holds a set of projects, searches can me done on a whole workspace across all the different projects associated to it. A workspace effectively represent one deployment of the OpenGrok web app on your web server and is therefore accessible from the following URL:
 
 ```
-usage: opengrokw.py init [--webappsdir WEBAPPSDIR] [--name NAME]
+http://localhost:8080/your-workspace
 ```
 
-Initialise and deploy a new opengrok workspace.
+### Project
+Projects are ultimately what holds the source code, they can be added or removed on an invidiual basis without having to re-index all the projects in the workspace.
 
-optional arguments:
-  --webappsdir WEBAPPSDIR
-                        Directory into which deploy the webapp associated to
-                        the opengrok workspace.
-  --name NAME           Name used to access the opengrok workspace from the
-                        webserver.
-
+## Setup
+### Arch linux
+This repository holds an AUR build script you can use to automatically install everything that is needed:
+``` shell
+makepkg -s
+sudo pacman -U opengrok-x.x.x.-x-any.pkg.tar.zst
 ```
-usage: opengrokw.py index [module [module ...]]
-```
-
-Index the opengrok workspace.
-
-positional arguments:
-  module  A list of module to index. If none all modules will be indexed.
-
-```
-usage: opengrokw.py add [--name NAME] path
+You'll still need to manually add yourself to the tomcat10 user group in order to deply workspaces:
+``` shell
+sudo gpasswd -a yourself tomcat10
 ```
 
-Add a new module to the opengrok workspace.
+### Other distributions
+You will need to install:
+* Java 11 or higher
+* [OpenGrok](https://github.com/oracle/opengrok) under `/usr/share/java/opengrok`
+* A servlet container like [GlassFish](https://glassfish.org/) or [Tomcat](http://tomcat.apache.org/) 10.0 or later
 
-positional arguments:
-  path         The path of the module sources used for indexing.
+You'll also need to have write access to your servlet container deployment directory in order to be able to deploy workspaces.
 
-optional arguments:
-  --name NAME  Name of the module. If none, the module sources directory name
-               will be used.
+## Usage
+Create and initialise you workspace:
 
-```
-usage: opengrokw.py remove [module [module ...]]
-```
-
-Remove module(s) from the opengrok workspace.
-
-positional arguments:
-  module  Module to remove from the opengrok workspace. If none, the whole
-          workspace will be deleted and undeployed (requires confirmation)
-
-```
-usage: opengrokw.py list
+``` shell
+mkdir -p ~/opengrok/your-workspace
+cd ~/opengrok/your-workspace
+opengrokw  init
 ```
 
-List the opengrok worspace modules.
+Add a project to your workspace and restart your servlet container to reflect the changes:
+``` shell
+opengrokw add ~/some-directory/your-project
+sudo systemctl restart tomcat10
+xdg-open http://localhost:8080/your-workspace
+```
 
-NOTE: most of those commands will require a web server restart in order to take effect.
+List all the projects in your workspace:
+``` shell
+opengrokw list
+``` 
+
+Remove a project from your workspace and restart your servlet container to reflect the changes
+``` shell
+opengrokw remove your-project
+sudo systemctl restart tomcat10
+```
+
+## License
+This software is licensed under the [MIT license](LICENSE)
+
+Copyright &#169; 2021 All rights reserved. XdevL
